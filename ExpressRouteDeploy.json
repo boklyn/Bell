@@ -4,24 +4,28 @@
     "parameters": {
         "circuitName": {
             "type": "string",
+            "defaultValue": "BoklynTestCircuit",
             "metadata": {
                 "description": "1.This is the name of the ExpressRoute circuit"
             }
         },
         "serviceProviderName": {
             "type": "string",
+            "defaultValue": "MSIT",
             "metadata": {
                 "description": "1.This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call."
             }
         },
         "peeringLocation": {
             "type": "string",
+            "defaultValue": "Bay Area 2",
             "metadata": {
                 "description": "1.This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call."
             }
         },
         "bandwidthInMbps": {
             "type": "int",
+            "defaultValue": 50,
             "metadata": {
                 "description": "1.This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call."
             }
@@ -67,30 +71,6 @@
                 "description": "1.BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering."
             }
         },
-        "peerASN": {
-            "type": "int",
-            "metadata": {
-                "description": "1.The autonomous system number of the customer/connectivity provider."
-            }
-        },
-        "primaryPeerAddressPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "1./30 subnet used to configure IP addresses for interfaces on Link1."
-            }
-        },
-        "secondaryPeerAddressPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "1./30 subnet used to configure IP addresses for interfaces on Link2."
-            }
-        },
-        "vlanId": {
-            "type": "int",
-            "metadata": {
-                "description": "1.Specifies the identifier that is used to identify the customer."
-            }
-        },
         "gatewayType": {
             "type": "string",
             "defaultValue": "ExpressRoute",
@@ -120,20 +100,9 @@
         },
         "addressPrefix": {
             "type": "string",
+            "defaultValue": "192.168.0.0/16",
             "metadata": {
                 "description": "The address space in CIDR notation for the new virtual network."
-            }
-        },
-        "subnetName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the first subnet in the new virtual network."
-            }
-        },
-        "subnetName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the first subnet in the new virtual network."
             }
         },
         "subnetName1": {
@@ -183,27 +152,23 @@
         },
         "gatewayPublicIPName": {
             "type": "string",
-            "defaultValue": "MSITTestGWIP1",
+            "defaultValue": "MSITTestGWIP2",
             "metadata": {
                 "description": "The resource name given to the public IP attached to the gateway."
             }
         },
         "gatewayName": {
             "type": "string",
+            "defaultValue": "MSITGaterway2",
             "metadata": {
                 "description": "The resource name given to the ExpressRoute gateway."
             }
         },
         "connectionName": {
             "type": "string",
+            "defaultValue": "MSITGWConnectEast",
             "metadata": {
                 "description": "The resource name given to the Connection which links VNet Gateway to ExpressRoute circuit."
-            }
-        },
-        "circuitName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the ExpressRoute circuit with which the VNet Gateway needs to connect. The Circuit must be already created successfully and must have its circuitProvisioningState property set to 'Enabled', and serviceProviderProvisioningState property set to 'Provisioned'. The Circuit must also have a BGP Peering of type AzurePrivatePeering."
             }
         }
     },
