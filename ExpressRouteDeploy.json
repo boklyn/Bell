@@ -294,7 +294,7 @@
                     "location": "[parameters('location')]",
                     "dependsOn": [
                         "[concat('Microsoft.Network/virtualNetworkGateways/', parameters('gatewayName'))]",
-                        "[concat('Microsoft.Network/expressRouteCircuits', parameters('gatewayName'))]"
+                        "[concat('Microsoft.Network/expressRouteCircuits/', parameters('circuitName'))]"
                     ],
                     "properties": {
                         "virtualNetworkGateway1": {
