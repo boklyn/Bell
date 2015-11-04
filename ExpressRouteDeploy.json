@@ -298,10 +298,10 @@
                     ],
                     "properties": {
                         "virtualNetworkGateway1": {
-                            "id": "[resourceId('Microsoft.Network/virtualNetworkGateways',parameters('gatewayName'))]"
+                            "id": "[resourceId('Microsoft.Network/virtualNetworkGateways/',parameters('gatewayName'))]"
                         },
                         "peer": {
-                            "id": "[resourceId('Microsoft.Network/expressRouteCircuits',parameters('circuitName'))]"
+                            "id": "[resourceId('Microsoft.Network/expressRouteCircuits/',parameters('circuitName'))]"
                         },
                         "connectionType": "[parameters('connectionType')]",
                         "routingWeight": "[variables('routingWeight')]"
