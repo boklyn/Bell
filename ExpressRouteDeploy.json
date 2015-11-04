@@ -223,6 +223,9 @@
                     "type": "Microsoft.Network/virtualNetworks",
                     "name": "[parameters('virtualNetworkName')]",
                     "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/expressRouteCircuits/', parameters('circuitName'))]"
+                    ],
                     "properties": {
                         "addressSpace": {
                             "addressPrefixes": [
