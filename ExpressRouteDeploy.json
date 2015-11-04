@@ -171,6 +171,27 @@
                 "description": "The resource name given to the Connection which links VNet Gateway to ExpressRoute circuit."
             }
         },
+        "primaryPeerAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.212.16/30",
+            "metadata": {
+                "description": "/30 subnet used to configure IP addresses for interfaces on Link1."
+            }
+        },
+        "secondaryPeerAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.20.30/30",
+            "metadata": {
+                "description": "/30 subnet used to configure IP addresses for interfaces on Link2."
+            }
+        },
+        "peerASN": {
+            "type": "int",
+            "defaultValue": 2138,
+            "metadata": {
+                "description": "The autonomous system number of the customer/connectivity provider."
+            }
+        },
         "vlanId": {
             "type": "int",
             "defaultValue": 900,
@@ -186,6 +207,39 @@
         "routingWeight": 3
     },
     "resources": [
+        {
+            "apiVersion": "[variables('apiVersion')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworkName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnetName1')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix1')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('subnetName2')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix2')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('gatewaySubnet')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
         {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Network/expressRouteCircuits",
@@ -211,56 +265,24 @@
                         "name": "[parameters('peeringType')]",
                         "properties": {
                             "peeringType": "[parameters('peeringType')]",
-                            "vlanId": "[parameters('vlanId')]"
+                            "vlanId": "[parameters('vlanId')]",
+                            "primaryPeerAddressPrefix": "[parameters('primaryPeerAddressPrefix')]",
+                            "secondaryPeerAddressPrefix": "[parameters('secondaryPeerAddressPrefix')]",
+                            "peerASN": "[parameters('peerASN')]"
                         }
                     }
                 ]
             },
-            "resources": 
-            [
-                {
-                    "apiVersion": "[variables('apiVersion')]",
-                    "type": "Microsoft.Network/virtualNetworks",
-                    "name": "[parameters('virtualNetworkName')]",
-                    "location": "[parameters('location')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Network/expressRouteCircuits/', parameters('circuitName'))]"
-                    ],
-                    "properties": {
-                        "addressSpace": {
-                            "addressPrefixes": [
-                                "[parameters('addressPrefix')]"
-                            ]
-                        },
-                        "subnets": [
-                            {
-                                "name": "[parameters('subnetName1')]",
-                                "properties": {
-                                    "addressPrefix": "[parameters('subnetPrefix1')]"
-                                }
-                            },
-                            {
-                                "name": "[parameters('subnetName2')]",
-                                "properties": {
-                                    "addressPrefix": "[parameters('subnetPrefix2')]"
-                                }
-                            },
-                            {
-                                "name": "[parameters('gatewaySubnet')]",
-                                "properties": {
-                                    "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
-                                }
-                            }
-                        ]
-                    }
-                },
+            "resources": [
+
                 {
                     "apiVersion": "[variables('apiVersion')]",
                     "type": "Microsoft.Network/publicIPAddresses",
                     "name": "[parameters('gatewayPublicIPName')]",
                     "location": "[parameters('location')]",
                     "dependsOn": [
-                        "[concat('Microsoft.Network/expressRouteCircuits/', parameters('circuitName'))]"
+                        "[concat('Microsoft.Network/expressRouteCircuits/', parameters('circuitName'))]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"
                     ],
                     "properties": {
                         "publicIPAllocationMethod": "Dynamic"
@@ -294,14 +316,15 @@
                         "gatewayType": "[parameters('gatewayType')]"
                     }
                 },
-                { 
+                {
                     "apiVersion": "[variables('apiVersion')]",
                     "type": "Microsoft.Network/connections",
                     "name": "[parameters('connectionName')]",
                     "location": "[parameters('location')]",
                     "dependsOn": [
                         "[concat('Microsoft.Network/virtualNetworkGateways/', parameters('gatewayName'))]",
-                        "[concat('Microsoft.Network/expressRouteCircuits/', parameters('circuitName'))]"
+                        "[concat('Microsoft.Network/expressRouteCircuits/', parameters('circuitName'))]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"
                     ],
                     "properties": {
                         "virtualNetworkGateway1": {
