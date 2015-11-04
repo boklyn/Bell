@@ -166,7 +166,7 @@
         },
         "connectionName": {
             "type": "string",
-            "defaultValue": "MSITGWConnectEast",
+            "defaultValue": "TheConnection",
             "metadata": {
                 "description": "The resource name given to the Connection which links VNet Gateway to ExpressRoute circuit."
             }
