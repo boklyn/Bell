@@ -170,6 +170,13 @@
             "metadata": {
                 "description": "The resource name given to the Connection which links VNet Gateway to ExpressRoute circuit."
             }
+        },
+        "vlanId": {
+            "type": "int",
+            "defaultValue": 900,
+            "metadata": {
+                "description": "Specifies the identifier that is used to identify the customer."
+            }
         }
     },
     "variables": {
@@ -203,7 +210,8 @@
                     {
                         "name": "[parameters('peeringType')]",
                         "properties": {
-                            "peeringType": "[parameters('peeringType')]"
+                            "peeringType": "[parameters('peeringType')]",
+                            "vlanId": "[parameters('vlanId')]"
                         }
                     }
                 ]
