@@ -3,16 +3,19 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "eastus"
         },
         "newStorageAccountName": {
             "type": "string",
+            "defaultValue": "bokbarstorage",
             "metadata": {
                 "description": "Unique DNS Name for the Storage Account where the Virtual Machine's disks will be placed."
             }
         },
         "adminPassword": {
             "type": "securestring",
+            "defaultValue": "p@xv0bisum",
             "metadata": {
                 "description": "Password for the NG."
             }
@@ -24,12 +27,13 @@
             }
         },
         "vNETName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "barvnet"
         },
         "NamingPrefix": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "bokprefix"
         }
-
     },
     "variables": {
         "AddressPrefix" : "172.16.57.0/24",
