@@ -1,0 +1,649 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "East US",
+            "metadata": {
+                "description": "1. and 2. Location where resources would be created."
+            }
+        },
+        "vNETName": {
+            "type": "string",
+            "defaultValue": "TestARMVnet1",
+            "metadata": {
+                "description": "The name of the virtual network to create."
+            }
+        },
+        "vNETAddressPrefix": {
+            "type": "string",
+            "defaultValue": "192.168.0.0/16",
+            "metadata": {
+                "description": "The address space in CIDR notation for the new virtual network."
+            }
+        },
+        "backEndSubnetName": {
+            "type": "string",
+            "defaultValue": "Backend",
+            "metadata": {
+                "description": "The name of the first subnet in the new virtual network."
+            }
+        },
+        "frontEndSubnetName": {
+            "type": "string",
+            "defaultValue": "Frontend",
+            "metadata": {
+                "description": "The name of the first subnet in the new virtual network."
+            }
+        },
+        "gatewaySubnet": {
+            "type": "string",
+            "defaultValue": "GatewaySubnet",
+            "allowedValues": [
+                "GatewaySubnet"
+            ],
+            "metadata": {
+                "description": "The name of the subnet where Gateway is to be deployed. This must always be named GatewaySubnet."
+            }
+        },
+        "backEndSubnetRange": {
+            "type": "string",
+            "defaultValue": "192.168.1.0/24",
+            "metadata": {
+                "description": "The address range in CIDR notation for the first subnet."
+            }
+        },
+        "frontEndSubnetRange": {
+            "type": "string",
+            "defaultValue": "192.168.2.0/24",
+            "metadata": {
+                "description": "The address range in CIDR notation for the first subnet."
+            }
+        },
+        "gatewaySubnetPrefix": {
+            "type": "string",
+            "defaultValue": "192.168.3.0/28",
+            "metadata": {
+                "description": "The address range in CIDR notation for the Gateway subnet. For ExpressRoute enabled Gateways, this must be minimum of /28."
+            }
+        },
+        "gatewayPublicIPName": {
+            "type": "string",
+            "defaultValue": "MSITTestGWIP2",
+            "metadata": {
+                "description": "The resource name given to the public IP attached to the gateway."
+            }
+        },
+        "gatewayName": {
+            "type": "string",
+            "defaultValue": "MSITGaterway2",
+            "metadata": {
+                "description": "The resource name given to the ExpressRoute gateway."
+            }
+        },
+        "connectionName": {
+            "type": "string",
+            "defaultValue": "TheConnection",
+            "metadata": {
+                "description": "The resource name given to the Connection which links VNet Gateway to ExpressRoute circuit."
+            }
+        },
+        "primaryPeervNETAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.212.16/30",
+            "metadata": {
+                "description": "/30 subnet used to configure IP addresses for interfaces on Link1."
+            }
+        },
+        "secondaryPeervNETAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.20.30/30",
+            "metadata": {
+                "description": "/30 subnet used to configure IP addresses for interfaces on Link2."
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage Account Name"
+            }
+        },
+        "loadBalancerPublicIPName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the Public IP object used to access the NG"
+            }
+        },
+        "loadBalancerPublicDNSName": {
+            "type": "string",
+            "metadata": {
+                "description": "Unique DNS Name for the Public IP used to access the NG"
+            }
+        },
+        "ngAvailabilitySetName": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall High Availability Set Name"
+            }
+        },
+        "frontEndNICBarracuda1Name": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall A Private IP FrontEnd NIC"
+            }
+        },
+        "loadBalancerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure LoadBalancer Name"
+            }
+        },
+        "frontEndNICBarracuda1IP": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall A Private IP FrontEnd NIC"
+            }
+        },
+        "frontEndNICBarracuda2Name": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall B Private IP FrontEnd NIC"
+            }
+        },
+        "frontEndNICBarracuda2IP": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall B Private IP FrontEnd NIC"
+            }
+        },
+        "backEndNICBarracuda1Name": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall A Private IP BackEnd NIC"
+            }
+        },
+        "backEndNICBarracuda1IP": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall A Private IP BackEnd NIC"
+            }
+        },
+        "backEndNICBarracuda2Name": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall B Private IP BackEnd NIC"
+            }
+        },
+        "backEndNICBarracuda2IP": {
+            "type": "string",
+            "metadata": {
+                "description": "NG Firewall B Private IP BackEnd NIC"
+            }
+        },
+        "ng1Name": {
+            "type": "string",
+            "metadata": {
+                "description": "First NG Firewall Name"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "NG Firewall Root User password"
+            },
+            "defaultValue": "p@xv0bisum"
+        },
+        "ng2Name": {
+            "type": "string",
+            "metadata": {
+                "description": "Second NG Firewall Name"
+            }
+        }
+    },
+    "variables": {
+        "apiVersion": "2015-06-15",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vNETName'))]",
+        "gatewaySubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('gatewaySubnet'))]",
+        "routingWeight": 3,
+        "storageAccountType": "Standard_LRS",
+        "publicIPAddressType": "Static",
+        "frontEndRef": "[concat(variables('vnetID'),'/subnets/',parameters('frontEndSubnetName'))]",
+        "loadBalancerID": "[resourceId('Microsoft.Network/loadBalancers',parameters('loadBalancerName'))]",
+        "backEndRef": "[concat(variables('vnetID'),'/subnets/',parameters('backEndSubnetName'))]",
+        "loadBalancerID": "[resourceId('Microsoft.Network/loadBalancers',parameters('loadBalancerName'))]",
+        "loadBalancerPoolID": "[concat(variables('loadBalancerID'),'/backendAddressPools/loadBalancerBackend')]",
+        "loadBalancerProbeID": "[concat(variables('loadBalancerID'),'/probes/tcpProbe')]",
+        "frontEndIPConfigID": "[concat(variables('loadBalancerID'),'/frontendIPConfigurations/loadBalancerFrontend')]",
+        "vmSize": "Standard_D2",
+        "vmStorageAccountContainerName": "vhds",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vNETName'))]",
+        "adminUsername": "azureadmin",
+        "loadBalancerPublicIPID": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('loadBalancerPublicIPName'))]"
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('apiVersion')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vNETName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('vNETAddressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('backEndSubnetName')]",
+                        "properties": {
+                            "addressPrefixes": "[parameters('backEndSubnetRange')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('frontEndSubnetName')]",
+                        "properties": {
+                            "addressPrefixes": "[parameters('frontEndSubnetRange')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('gatewaySubnet')]",
+                        "properties": {
+                            "addressPrefixes": "[parameters('gatewaySubnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('frontEndNICBarracuda1Name')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vNETName'))]",
+                "[concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "frontEndNICBarracuda1",
+                        "properties": {
+                            "enableIPForwarding": true,
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('frontEndNICBarracuda1IP')]",
+                            "subnet": {
+                                "id": "[variables('frontEndRef')]"
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[concat(variables('loadBalancerID'), '/backendAddressPools/LoadBalancerBackend')]"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('backEndNICBarracuda1Name')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vNETName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "backEndNICBarracuda1",
+                        "properties": {
+                            "enableIPForwarding": true,
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('backEndNICBarracuda1IP')]",
+                            "subnet": {
+                                "id": "[variables('backEndRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('frontEndNICBarracuda2Name')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vNETName'))]",
+                "[concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "frontEndNICBarracuda2",
+                        "properties": {
+                            "enableIPForwarding": true,
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('frontEndNICBarracuda2IP')]",
+                            "subnet": {
+                                "id": "[variables('frontEndRef')]"
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[concat(variables('loadBalancerID'), '/backendAddressPools/LoadBalancerBackend')]"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('backEndNICBarracuda2Name')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vNETName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "backEndNICBarracuda2",
+                        "properties": {
+                            "enableIPForwarding": true,
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('backEndNICBarracuda2IP')]",
+                            "subnet": {
+                                "id": "[variables('backEndRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('storageAccountName')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[parameters('location')]",
+            "tags": {
+                "displayName": "StorageAccount"
+            },
+            "properties": {
+                "accountType": "[variables('storageAccountType')]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-06-15",
+                    "type": "Microsoft.Network/publicIPAddresses",
+                    "name": "[parameters('loadBalancerPublicIPName')]",
+                    "location": "[parameters('location')]",
+                    "tags": {
+                        "displayName": "LoadBalancerNGIP"
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.Storage/storageAccounts/', parameters('StorageAccountName'))]"
+                    ],
+                    "properties": {
+                        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                        "dnsSettings": {
+                            "domainNameLabel": "[parameters('loadBalancerPublicDNSName')]"
+                        }
+                    }
+                },
+                {
+                    "name": "[parameters('ngAvailabilitySetName')]",
+                    "type": "Microsoft.Compute/availabilitySets",
+                    "location": "[parameters('location')]",
+                    "apiVersion": "2015-06-15",
+                    "dependsOn": [
+                        "[concat('Microsoft.Storage/storageAccounts/', parameters('StorageAccountName'))]"
+                    ],
+                    "tags": {
+                        "displayName": "NGAvailabilitySet"
+                    }
+                },
+                {
+                    "apiVersion": "2015-06-15",
+                    "name": "[parameters('loadBalancerName')]",
+                    "type": "Microsoft.Network/loadBalancers",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/publicIPAddresses/', parameters('loadBalancerPublicIPName'))]",
+                        "[concat('Microsoft.Storage/storageAccounts/', parameters('StorageAccountName'))]"
+                    ],
+                    "properties": {
+                        "frontendIPConfigurations": [
+                            {
+                                "name": "loadBalancerFrontEnd",
+                                "properties": {
+                                    "publicIPAddress": {
+                                        "id": "[variables('loadBalancerPublicIPID')]"
+                                    }
+                                }
+                            }
+                        ],
+                        "backendAddressPools": [
+                            {
+                                "name": "loadBalancerBackend"
+                            }
+                        ],
+                        "inboundNatRules": [
+
+                        ],
+                        "loadBalancingRules": [
+                            {
+                                "name": "HTTPS",
+                                "properties": {
+                                    "frontendIPConfiguration": {
+                                        "id": "[variables('frontEndIPConfigID')]"
+                                    },
+                                    "backendAddressPool": {
+                                        "id": "[variables('loadBalancerPoolID')]"
+                                    },
+                                    "protocol": "tcp",
+                                    "frontendPort": 443,
+                                    "backendPort": 443,
+                                    "enableFloatingIP": false,
+                                    "idleTimeoutInMinutes": 5,
+                                    "probe": {
+                                        "id": "[variables('loadBalancerProbeID')]"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "DNSudp",
+                                "properties": {
+                                    "frontendIPConfiguration": {
+                                        "id": "[variables('frontEndIPConfigID')]"
+                                    },
+                                    "backendAddressPool": {
+                                        "id": "[variables('loadBalancerPoolID')]"
+                                    },
+                                    "protocol": "udp",
+                                    "frontendPort": 53,
+                                    "backendPort": 53,
+                                    "enableFloatingIP": false,
+                                    "idleTimeoutInMinutes": 5,
+                                    "probe": {
+                                        "id": "[variables('loadBalancerProbeID')]"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "SFTP",
+                                "properties": {
+                                    "frontendIPConfiguration": {
+                                        "id": "[variables('frontEndIPConfigID')]"
+                                    },
+                                    "backendAddressPool": {
+                                        "id": "[variables('loadBalancerPoolID')]"
+                                    },
+                                    "protocol": "tcp",
+                                    "frontendPort": 22,
+                                    "backendPort": 22,
+                                    "enableFloatingIP": false,
+                                    "idleTimeoutInMinutes": 5,
+                                    "probe": {
+                                        "id": "[variables('loadBalancerProbeID')]"
+                                    }
+                                }
+                            }
+                        ],
+                        "probes": [
+                            {
+                                "name": "tcpProbe",
+                                "properties": {
+                                    "protocol": "tcp",
+                                    "port": 443,
+                                    "intervalInSeconds": "5",
+                                    "numberOfProbes": "2"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('ng1Name')]",
+            "location": "[parameters('location')]",
+            "plan": {
+                "name": "byol",
+                "Product": "barracuda-ng-firewall",
+                "Publisher": "barracudanetworks"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('StorageAccountName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('frontEndNICBarracuda1Name'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('backEndNICBarracuda1Name'))]",
+                "[concat('Microsoft.Compute/availabilitySets/', parameters('ngAvailabilitySetName'))]"
+            ],
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('ngAvailabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[variables('vmSize')]"
+                },
+                "osProfile": {
+                    "computername": "[parameters('ng1Name')]",
+                    "adminUsername": "[variables('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "barracudanetworks",
+                        "offer": "barracuda-ng-firewall",
+                        "sku": "byol",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "osdisk",
+                        "vhd": {
+                            "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/','ngosdisk1', '.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "properties": {
+                                "primary": true
+                            },
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('frontEndNICBarracuda1Name'))]"
+
+                        },
+                        {
+                            "properties": {
+                                "primary": false
+                            },
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('backEndNICBarracuda1Name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('ng2Name')]",
+            "location": "[parameters('location')]",
+            "plan": {
+                "name": "byol",
+                "Product": "barracuda-ng-firewall",
+                "Publisher": "barracudanetworks"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('StorageAccountName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('frontEndNICBarracuda2Name'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('backEndNICBarracuda2Name'))]",
+                "[concat('Microsoft.Compute/availabilitySets/', parameters('ngAvailabilitySetName'))]"
+            ],
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('ngAvailabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[variables('vmSize')]"
+                },
+                "osProfile": {
+                    "computername": "[parameters('ng2Name')]",
+                    "adminUsername": "[variables('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "barracudanetworks",
+                        "offer": "barracuda-ng-firewall",
+                        "sku": "byol",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "osdisk",
+                        "vhd": {
+                            "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/','ngosdisk2', '.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "properties": {
+                                "primary": true
+                            },
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('frontEndNICBarracuda2Name'))]"
+
+                        },
+                        {
+                            "properties": {
+                                "primary": false
+                            },
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('backEndNICBarracuda2Name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net')]"
+                    }
+                }
+            }
+        }
+    ]
+}

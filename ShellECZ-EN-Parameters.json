@@ -1,0 +1,28 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "backEndNICBarracuda1IP": { "value": "10.201.201.10" },
+    "backEndNICBarracuda1Name": { "value": "SZEN-NIC-01001" },
+    "backEndNICBarracuda2IP": { "value": "10.201.201.11" },
+    "backEndNICBarracuda2Name": { "value": "SZEN-NIC-01003" },
+    "backEndSubnetName": { "value": "SZEN-SUB-01001" },
+    "backEndSubnetRange": { "value": "10.201.201.0/25" },
+    "frontEndNICBarracuda1IP": { "value": "10.201.200.10" },
+    "frontEndNICBarracuda1Name": { "value": "SZEN-NIC-01000" },
+    "frontEndNICBarracuda2IP": { "value": "10.201.200.11" },
+    "frontEndNICBarracuda2Name": { "value": "SZEN-NIC-01002" },
+    "frontEndSubnetName": { "value": "SZEN-SUB-01000" },
+    "frontEndSubnetRange": { "value": "10.201.200.0/25" },
+    "loadBalancerPublicIPName": { "value": "SZEN-PUB-01000"},
+    "loadBalancerPublicDNSName": { "value": "SZENpublic"},
+    "loadBalancerName": { "value": "SZEN-ILB-01000" },
+    "location": { "value": "North Europe" },
+    "ngAvailabilitySetName": { "value": "SZEN-AVSET-01000"},
+    "storageAccountName": { "value": "SZENSTGR01000" },
+    "vNETAddressPrefix": { "value": "10.201.200.0/21" },
+    "vNETName": { "value": "SZEN-VNET-01000" },
+    "ng1Name": { "value": "SZEN-NG-01000" },
+    "ng2Name": { "value": "SZEN-NG-01001" }
+  }
+}

@@ -1,0 +1,28 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "backEndNICBarracuda1IP": { "value": "10.201.73.10" },
+    "backEndNICBarracuda1Name": { "value": "SZUW-NIC-01001" },
+    "backEndNICBarracuda2IP": { "value": "10.201.73.11" },
+    "backEndNICBarracuda2Name": { "value": "SZUW-NIC-01003" },
+    "backEndSubnetName": { "value": "SZUW-SUB-01001" },
+    "backEndSubnetRange": { "value": "10.201.73.0/25" },
+    "frontEndNICBarracuda1IP": { "value": "10.201.72.10" },
+    "frontEndNICBarracuda1Name": { "value": "SZUW-NIC-01000" },
+    "frontEndNICBarracuda2IP": { "value": "10.201.72.11" },
+    "frontEndNICBarracuda2Name": { "value": "SZUW-NIC-01002" },
+    "frontEndSubnetName": { "value": "SZUW-SUB-01000" },
+    "frontEndSubnetRange": { "value": "10.201.72.0/25" },
+    "loadBalancerPublicIPName": { "value": "SZUW-PUB-01000"},
+    "loadBalancerPublicDNSName": { "value": "SZUWpublic"},
+    "loadBalancerName": { "value": "SZUW-ILB-01000" },
+    "location": { "value": "West Europe" },
+    "ngAvailabilitySetName": { "value": "SZUW-AVSET-01000"},
+    "storageAccountName": { "value": "SZUWSTGR01000" },
+    "vNETAddressPrefix": { "value": "10.201.72.0/21" },
+    "vNETName": { "value": "SZUW-VNET-01000" },
+    "ng1Name": { "value": "SZUW-NG-01000" },
+    "ng2Name": { "value": "SZUW-NG-01001" }
+  }
+}
