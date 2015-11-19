@@ -8,7 +8,8 @@
     "gatewaySubnetRange": { "value": "10.201.215.0/28" },
     "frontEndSubnetName": { "value": "SZEW-SUB-20000" },
     "frontEndSubnetRange": { "value": "10.201.208.0/25" },
-    "loadBalancerName": { "value": "SZEW-ILB-20000" },
-    "location": { "value": "West Europe" }
+    "location": { "value": "West Europe" },
+    "vNETAddressPrefix": { "value": "10.201.208.0/21" },
+    "vNETName": { "value": "SZEW-VNET-01000" }
   }
 }
