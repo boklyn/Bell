@@ -1,0 +1,14 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "backEndSubnetName": { "value": "SZEW-SUB-20001" },
+    "backEndSubnetRange": { "value": "10.201.209.0/25" },
+    "gatewaySubnetName": { "value": "SZEW-AGW-20000" },
+    "gatewaySubnetRange": { "value": "10.201.215.0/28" },
+    "frontEndSubnetName": { "value": "SZEW-SUB-20000" },
+    "frontEndSubnetRange": { "value": "10.201.208.0/25" },
+    "loadBalancerName": { "value": "SZEW-ILB-20000" },
+    "location": { "value": "West Europe" }
+  }
+}
